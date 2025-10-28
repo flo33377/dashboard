@@ -1,6 +1,7 @@
 
 <!-- librairy chart.js pour les graphiques -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script>
 
 <!-- Analytics datas to get retrieved in JS -->
 <?php if($datas) : 
@@ -54,6 +55,17 @@
     </div>
 
     <div id='chartContainer'></div>
+</div>
+
+
+<div id="split_line">
+    <div id="device_bloc" class="split_charts">
+        <canvas id="device_split"></canvas>
+    </div>
+
+    <div id="browser_bloc" class="split_charts">
+        <canvas id="browser_split"></canvas>
+    </div>
 </div>
 
 

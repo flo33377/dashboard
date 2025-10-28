@@ -197,7 +197,8 @@ footer {
 /* uniquement les enfants div direct de project_topline */
 #project_general, 
 #project_topstats > div, 
-.chart {
+.chart, 
+#split_line > div {
     border-radius: 8px;
     background: #F85B5B;
     background: linear-gradient(60deg, rgba(248, 91, 91, 1) 0%, rgba(115, 112, 250, 1) 100%);
@@ -351,5 +352,29 @@ footer {
     color: #F0EDE4;
 }
 
+#split_line {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-around;
+    width: 100%;
+    margin-top: 20px;
+}
 
+#split_line > div {
+    padding: 30px;
+}
+
+#split_line canvas {
+    height: 300px;
+    width: 300px;
+}
+
+/* Case mobile */
+@media screen and (max-width: 767px) {
+    #split_line {
+        flex-direction: column;
+        gap: 15px;
+    }
+}
 

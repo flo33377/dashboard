@@ -366,3 +366,155 @@ if(chartBlock) {
 
     display7LastDaysChart(); // initialisation par défaut pour afficher les 7 derniers jours
 }
+
+// Graphiques du split device
+
+let deviceSplit = document.getElementById('device_split');
+
+if(deviceSplit) {
+    const totalDesktop = allDatas.reduce((sum, day) => sum + (day.desktop || 0), 0);
+    const totalTablet  = allDatas.reduce((sum, day) => sum + (day.tablet  || 0), 0);
+    const totalMobile  = allDatas.reduce((sum, day) => sum + (day.mobile  || 0), 0);
+
+    const labels = ['Desktop', 'Tablette', 'Mobile'];
+    const dataValues = [totalDesktop, totalTablet, totalMobile];
+
+    const canvas = deviceSplit;
+    const ctx = canvas.getContext('2d');
+
+    new Chart(ctx, {
+        type: 'pie', // ou 'doughnut'
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'Répartition des visiteurs',
+                data: dataValues,
+                backgroundColor: [
+                    'grey',
+                    'maroon',
+                    'blue'
+                ],
+                borderColor: [
+                    'white',
+                    'white',
+                    'white'
+                ],
+                borderWidth: 1
+            }]
+        },
+        plugins: [ChartDataLabels],
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    position: 'bottom',
+                    labels: { color: 'black' }
+                },
+                title: {
+                    display: true,
+                    text: 'Répartition des utilisateurs par device',
+                    color: 'black',
+                    font: {
+                        weight: 'bold'
+                    }
+                },
+                datalabels: {
+                    formatter: (value, context) => {
+                        const dataset = context.chart.data.datasets[0].data;
+                        const total = dataset.reduce((sum, val) => sum + val, 0);
+                        const percentage = ((value / total) * 100).toFixed(1) + '%';
+                        return percentage;
+                },
+                color: '#fff',
+                font: {
+                    weight: 'bold'
+                }
+            }
+            },
+            animation: {
+                animateScale: true,
+                animateRotate: true
+            }
+        }
+    });
+}
+
+// Graphiques du split browser
+
+let deviceBrowser = document.getElementById('browser_split');
+
+if(deviceBrowser) {
+    const totalChrome = allDatas.reduce((sum, day) => sum + (day.chrome || 0), 0);
+    const totalFirefox  = allDatas.reduce((sum, day) => sum + (day.firefox  || 0), 0);
+    const totalSafari  = allDatas.reduce((sum, day) => sum + (day.safari  || 0), 0);
+    const totalEdge  = allDatas.reduce((sum, day) => sum + (day.edge  || 0), 0);
+    const totalOther  = allDatas.reduce((sum, day) => sum + (day.other_browser  || 0), 0);
+
+    const labels = ['Chrome', 'Firefox', 'Safari', 'Edge', 'Autre navigateur'];
+    const dataValues = [totalChrome, totalFirefox, totalSafari, totalEdge, totalOther];
+
+    const canvas = deviceBrowser;
+    const ctx = canvas.getContext('2d');
+
+    new Chart(ctx, {
+        type: 'pie', // ou 'doughnut'
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'Répartition des visiteurs',
+                data: dataValues,
+                backgroundColor: [
+                    'crimson',
+                    'orangered',
+                    'dodgerblue',
+                    'lightskyblue',
+                    'greenyellow'
+                ],
+                borderColor: [
+                    'white',
+                    'white',
+                    'white',
+                    'white',
+                    'white'
+                ],
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    position: 'bottom',
+                    labels: { color: 'black' }
+                },
+                title: {
+                    display: true,
+                    text: 'Répartition des utilisateurs par navigateur',
+                    color: 'black',
+                    font: {
+                        weight: 'bold'
+                    }
+                },
+                datalabels: {
+                    formatter: (value, context) => {
+                        const dataset = context.chart.data.datasets[0].data;
+                        const total = dataset.reduce((sum, val) => sum + val, 0);
+                        const percentage = ((value / total) * 100).toFixed(1) + '%';
+                        return percentage;
+                    },
+                    color: '#fff',
+                    font: {
+                        weight: 'bold'
+                    }
+                }
+            },
+            animation: {
+                animateScale: true,
+                animateRotate: true
+            }
+        }
+    });
+}
+
+
+
