@@ -1,0 +1,24 @@
+# Ignorer les fichiers d'environnement (mot de passe, url database)
+src/envir/*
+
+# Éviter d’inclure des fichiers temporaires ou sensibles
+*.log
+*.tmp
+*.bak
+
+# Ignorer les fichiers de config sensibles si présents
+config.php
+.env
+
+# Ignorer les dépendances
+vendor/
+node_modules/
+
+# Dossiers de cache ou système
+.cache/
+.idea/
+.vscode/
+
+# Ignorer les fichiers système inutiles
+.DS_Store
+Thumbs.db
