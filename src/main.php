@@ -14,6 +14,7 @@ include('mainFunctions.php');
     // Session
 session_set_cookie_params(86400); // durée du cookie de session = 24h
 session_start();
+/* unset($_SESSION['access_granted']); */
 
 
     // Constantes
@@ -84,10 +85,11 @@ switch($page){
     case "check_authenticate" : // mdp entré, check s'il est bon
         if($_POST['password'] == PASSWORD) {
             $_SESSION['access_granted'] = true;
+            $content = OVERVIEW;
         } else {
+            $content = AUTHENTICATE;
             $errorMessage = "wrong_password";
         }
-        $content = AUTHENTICATE;
         break;
     case "overview" : // accès autorisé, HP du dashboard
         $content = OVERVIEW;
