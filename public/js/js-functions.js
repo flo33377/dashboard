@@ -176,6 +176,15 @@ function display7LastDaysChart() {
     const impressions = last7DaysDatas.map(item => parseInt(item["impressions"]));
     const visitors = last7DaysDatas.map(item => parseInt(item["unique_visitors"]));
 
+    // calcule le max global
+    const maxValue = Math.max(...impressions, ...visitors);
+
+    // détermine dynamiquement le step
+    let stepSize = 1;
+    if (maxValue > 100) stepSize = 20;
+    else if (maxValue > 50) stepSize = 10;
+    else if (maxValue > 10) stepSize = 5;
+
     // get le canvas HTML à afficher
     const ctx = canvas.getContext('2d');
 
@@ -187,22 +196,29 @@ function display7LastDaysChart() {
             datasets: [{
                 label: 'Impressions par jour',
                 data: impressions,
-                backgroundColor: '#004643',
-                borderColor: '#004643',
-                borderWidth: 1,
+                backgroundColor: '#D198EF',
+                borderColor: '#D198EF',
+                borderWidth: 2,
+                tension: 0.4, // courbes plus lissées
+                pointRadius: 0, // taille des points
+                pointHoverRadius: 5, // taille au survol
                 yAxisID: 'y'
             },
             {
                 label: 'Visiteurs uniques par jour',
                 data: visitors,
-                backgroundColor: '#1DA3AF',
-                borderColor: '#1DA3AF',
-                borderWidth: 1,
-                yAxisID: 'y',
+                backgroundColor: '#FD97EF',
+                borderColor: '#FD97EF',
+                borderWidth: 2,
+                tension: 0.4,
+                pointRadius: 0,
+                pointHoverRadius: 5,
+                yAxisID: 'y'
             }]
         },
         options: {
             responsive: true,
+            maintainAspectRatio: false, // permet de contrôler la hauteur via CSS
             interaction: {
                 mode: 'index',
                 intersect: false
@@ -219,7 +235,7 @@ function display7LastDaysChart() {
                 y: {
                     beginAtZero: true,
                     ticks: {
-                        stepSize: 1, // utile si les valeurs sont faibles
+                        stepSize: stepSize,
                         color: 'black'
                     },
                     grid: {
@@ -272,6 +288,7 @@ function buildLast6MonthsData(allDatas, currentDate = new Date()) {
     });
 
     return completeData;
+
 }
 
 // 4. Fonction pour afficher le graphique Chart.js
@@ -288,6 +305,20 @@ function renderLast6MonthsChart(allDatas) {
 
     const completeData = buildLast6MonthsData(allDatas);
 
+    // calcule le max global (pour le stepSize)
+    const impressions = completeData.map(d => d.impressions);
+    const uniqueVisitors = completeData.map(d => d.unique_visitors);
+    const maxValue = Math.max(...impressions, ...uniqueVisitors);
+
+    // détermine dynamiquement le stepSize
+    let stepSize = 1;
+    if (maxValue > 1000) stepSize = 200;
+    else if (maxValue > 500) stepSize = 100;
+    else if (maxValue > 100) stepSize = 20;
+    else if (maxValue > 50) stepSize = 10;
+    else if (maxValue > 10) stepSize = 5;
+
+    // créé le graphique
     const ctx = canvas.getContext('2d');
     new Chart(ctx, {
         type: 'line',
@@ -297,23 +328,30 @@ function renderLast6MonthsChart(allDatas) {
                 {
                     label: 'Impressions sur le mois',
                     data: completeData.map(d => d.impressions),
-                    backgroundColor: '#004643',
-                    borderColor: '#004643',
-                    borderWidth: 1,
+                    backgroundColor: '#D198EF',
+                    borderColor: '#D198EF',
+                    borderWidth: 2,
+                    tension: 0.4, // courbes plus lissées
+                    pointRadius: 0, // taille des points
+                    pointHoverRadius: 5, // taille au survol
                     yAxisID: 'y'
                 },
                 {
                     label: 'Visiteurs uniques sur le mois',
                     data: completeData.map(d => d.unique_visitors),
-                    backgroundColor: '#1DA3AF',
-                    borderColor: '#1DA3AF',
-                    borderWidth: 1,
+                    backgroundColor: '#FD97EF',
+                    borderColor: '#FD97EF',
+                    borderWidth: 2,
+                    tension: 0.4, // courbes plus lissées
+                    pointRadius: 0, // taille des points
+                    pointHoverRadius: 5, // taille au survol
                     yAxisID: 'y'
                 }
             ]
         },
         options: {
             responsive: true,
+            maintainAspectRatio: false, // permet de contrôler la hauteur via CSS
             interaction: {
                 mode: 'index',
                 intersect: false
@@ -330,7 +368,7 @@ function renderLast6MonthsChart(allDatas) {
                 y: {
                     beginAtZero: true,
                     ticks: {
-                        stepSize: 5, // utile si les valeurs sont faibles
+                        stepSize: stepSize,
                         color: 'black'
                     },
                     grid: {
@@ -376,7 +414,7 @@ if(deviceSplit) {
     const totalTablet  = allDatas.reduce((sum, day) => sum + (day.tablet  || 0), 0);
     const totalMobile  = allDatas.reduce((sum, day) => sum + (day.mobile  || 0), 0);
 
-    const labels = ['Desktop', 'Tablette', 'Mobile'];
+    const labels = ['🖥️ Desktop', 'Tablette', '📱 Mobile'];
     const dataValues = [totalDesktop, totalTablet, totalMobile];
 
     const canvas = deviceSplit;
@@ -390,16 +428,17 @@ if(deviceSplit) {
                 label: 'Répartition des visiteurs',
                 data: dataValues,
                 backgroundColor: [
-                    'grey',
-                    'maroon',
-                    'blue'
+                    '#4D98ED',
+                    '#A598EE',
+                    '#FD97EF'
                 ],
                 borderColor: [
                     'white',
                     'white',
                     'white'
                 ],
-                borderWidth: 1
+                borderWidth: 1,
+                offset: 10
             }]
         },
         plugins: [ChartDataLabels],
@@ -408,13 +447,20 @@ if(deviceSplit) {
             plugins: {
                 legend: {
                     position: 'bottom',
-                    labels: { color: 'black' }
+                    labels: { 
+                        color: 'black',
+                        font: {
+                            family: 'Poppins, sans-serif',
+                            size: 13
+                        }
+                    }
                 },
                 title: {
                     display: true,
                     text: 'Répartition des utilisateurs par device',
                     color: 'black',
                     font: {
+                        family: 'Poppins, sans-serif',
                         weight: 'bold'
                     }
                 },
@@ -425,10 +471,17 @@ if(deviceSplit) {
                         const percentage = ((value / total) * 100).toFixed(1) + '%';
                         return percentage;
                 },
-                color: '#fff',
+                color: 'black',
+                backgroundColor: 'rgba(240, 240, 240, 0.8)', // 👈 fond gris léger
+                borderRadius: 4,
+                padding: 4,
                 font: {
+                    family: 'Poppins, sans-serif',
                     weight: 'bold'
-                }
+                },
+                anchor: 'end', // position de l’étiquette
+                align: 'start', // angle relatif à la part
+                clamp: true // évite les débordements visuels
             }
             },
             animation: {
@@ -477,21 +530,28 @@ if(deviceBrowser) {
                     'white',
                     'white'
                 ],
-                borderWidth: 1
+                borderWidth: 1,
+                offset: 10
             }]
         },
+        plugins: [ChartDataLabels],
         options: {
             responsive: true,
             plugins: {
                 legend: {
                     position: 'bottom',
-                    labels: { color: 'black' }
+                    labels: {
+                        color: 'black',
+                        family: 'Poppins, sans-serif', // 👈 change ici ta police
+                        size: 13
+                    }
                 },
                 title: {
                     display: true,
                     text: 'Répartition des utilisateurs par navigateur',
                     color: 'black',
                     font: {
+                        family: 'Poppins, sans-serif',
                         weight: 'bold'
                     }
                 },
@@ -502,10 +562,17 @@ if(deviceBrowser) {
                         const percentage = ((value / total) * 100).toFixed(1) + '%';
                         return percentage;
                     },
-                    color: '#fff',
+                    color: 'black',
+                    backgroundColor: 'rgba(240, 240, 240, 0.8)',
+                    borderRadius: 4,
+                    padding: 4,
                     font: {
+                        family: 'Poppins, sans-serif',
                         weight: 'bold'
-                    }
+                    },
+                    anchor: 'end', // position de l’étiquette
+                    align: 'start', // angle relatif à la part
+                    clamp: true // évite les débordements visuels
                 }
             },
             animation: {
