@@ -5,12 +5,27 @@
 
 <h1 class="content_title">Quel site vous intéresse ?</h1>
 
-<?php foreach ($projects as $key => $project): ?>
-    <div class="project" style="border-left: 6px solid <?= $project['secondaryColor'] ?>; background-color: <?= $project['mainColor'] ?>">
-        <img class="project-logo" src="<?= $project['logo'] ?>" alt="<?= $project['name'] ?>">
-        <a href="<?= BASE_URL ?>?project=<?= $key ?>">
-            <div class="project-name"><?= $project['name'] ?></div>
-            <p>Accéder au dashboard →</p>
-        </a>
+<script>
+    const projects = <?= json_encode($projects, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) ?>;
+</script>
+
+<div id="project_selection_area">
+
+    <div id='card_focus'>
+        <img src='' id='card_img'>
+        <p id="card_title"></p>
+        <div id='card_maincolor'></div>
+        <a href="" id='card_link'>Voir le dashboard →</a>
     </div>
-<?php endforeach; ?>
+
+    <div id='radio_panel'>
+        <?php $first = true; ?>
+        <?php foreach ($projects as $key => $project): ?>
+            <input type='radio' id='<?= $key ?>' name='radio_choice_logo' value='<?= htmlspecialchars($key) ?>'
+            <?php if($first) : ?> checked <?php $first = false; endif ?>>
+            <label for='<?= $key ?>' class="radio_choice_logo" style='background-image: url(<?= $project['logo'] ?>)'>
+            </label>
+        <?php endforeach ?>
+    </div>
+
+</div>

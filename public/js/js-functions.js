@@ -1,4 +1,49 @@
 
+/* FONCTION D'AFFICHAGE DYNAMIQUE DE LA CARD AVEC LES INFOS PROJET */
+
+const cardBloc = document.getElementById('card_focus');
+const cardImg = document.getElementById('card_img');
+const cardTitle = document.getElementById('card_title');
+const cardMainColor = document.getElementById('card_maincolor');
+const cardLink = document.getElementById('card_link');
+const radios = document.querySelectorAll('input[name="radio_choice_logo"]');
+
+function updateCard(projectKey) {
+    const project = projects[projectKey];
+    if (!project) return;
+
+    // Étape 1 : lance l’animation de fermeture
+    cardBloc.classList.add('flipping');
+
+    // Étape 2 : attend la moitié de la transition avant de changer le contenu
+    setTimeout(() => {
+        cardBloc.style.backgroundColor = project.mainColor;
+        cardBloc.style.border = "4px solid " + project.secondaryColor;
+        cardImg.src = project.logo;
+        cardTitle.textContent = project.name;
+        cardLink.href = '/dashboard/?project=' + projectKey; // en local = retirer "/dashboard" 
+        cardLink.style.backgroundColor = project.secondaryColor;
+    }, 500); // plus de la moitié de la durée de l'anim pour que le changement se fasse quand c'est masqué
+
+    // Étape 3 : réouvre la carte
+    setTimeout(() => {
+        cardBloc.classList.remove('flipping');
+    }, 600);
+
+}
+
+    // ✅ Initialisation au chargement (radio cochée par défaut)
+const defaultChecked = document.querySelector('input[name="radio_choice_logo"]:checked');
+if (defaultChecked) {
+    updateCard(defaultChecked.value);
+}
+
+    // ✅ Mise à jour dynamique au clic
+radios.forEach(radio => {
+    radio.addEventListener('change', () => updateCard(radio.value));
+});
+
+
 /* FONCTIONS DE CALCUL DES DONNEES */
 
 function calculateAndDisplayImpressions(datasRange) {
@@ -444,6 +489,7 @@ if(deviceSplit) {
         plugins: [ChartDataLabels],
         options: {
             responsive: true,
+            maintainAspectRatio: false,
             plugins: {
                 legend: {
                     position: 'bottom',
@@ -472,7 +518,7 @@ if(deviceSplit) {
                         return percentage;
                 },
                 color: 'black',
-                backgroundColor: 'rgba(240, 240, 240, 0.8)', // 👈 fond gris léger
+                backgroundColor: 'rgba(240, 240, 240, 0.8)',
                 borderRadius: 4,
                 padding: 4,
                 font: {
@@ -537,12 +583,13 @@ if(deviceBrowser) {
         plugins: [ChartDataLabels],
         options: {
             responsive: true,
+            maintainAspectRatio: false,
             plugins: {
                 legend: {
                     position: 'bottom',
                     labels: {
                         color: 'black',
-                        family: 'Poppins, sans-serif', // 👈 change ici ta police
+                        family: 'Poppins, sans-serif',
                         size: 13
                     }
                 },

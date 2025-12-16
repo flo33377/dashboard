@@ -17,6 +17,8 @@
 <?php endif ?>
 
 
+<a href="<?= BASE_URL ?>" class='back-button'>← Retour</a>
+
 <div id="project_topline">
 
     <div id="project_general">
@@ -36,7 +38,7 @@
         <div>
             <p id="project_name"><?= $focusedProject['name'] ?></p>
             <div id="project_actionsbtn">
-                    <a href="<?= $focusedProject['publicUrl'] ?>">Se rendre sur le site →</a>
+                    <a href="<?= $focusedProject['publicUrl'] ?>">Voir le site →</a>
             </div>
         </div>
     </div>
@@ -98,13 +100,10 @@
     </div>
 </div>
 
-
-<?= $focusedProject['dbUrl'] ?>
-
 <?php
-echo '<pre>';
+/* echo '<pre>';
 print_r($datas);
-echo '<pre>';
+echo '<pre>'; */
 ?>
 
 
