@@ -22,9 +22,6 @@ session_start();
 // base_url = lien vers la HP basé sur le serveur utilisé 
 define("BASE_URL", ($_SERVER["SERVER_PORT"] === "5000") ? "http://localhost:5000/" : "https://fneto-prod.fr/dashboard/");
 
-// authenticate = form de mot de passe pour accéder au site
-define("AUTHENTICATE", __DIR__ . "/content/authenticate.php");
-
 // overview = HP quand connecté
 define("OVERVIEW", __DIR__ . "/content/overview.php");
 
@@ -36,8 +33,8 @@ define("FOCUS_PROJECT", __DIR__ . "/content/focus-project.php");
     // Variables de pages
 $method = $_SERVER['REQUEST_METHOD'];
     // setting des param par défaut
-$page = "authenticate_needed"; // chemin du routeur par défaut => cas HP
-$content = AUTHENTICATE; // const du contenu de la page par défaut
+$page = "overview"; // chemin du routeur par défaut => cas HP
+$content = OVERVIEW; // const du contenu de la page par défaut
 $selectedProject = null; // par défaut, aucun project sélectionné 
 $projectStats = null; // par défaut, aucune donnée pour le projet sélectionné
 
@@ -47,18 +44,12 @@ $projectStats = null; // par défaut, aucune donnée pour le projet sélectionn�
 // set par défaut qu'il n'est pas connecté
 $access_granted = false;
 
-// 1ere étape, check s'il est connecté, si oui l'envoie sur l'overview par défaut
+// 1ere étape => si reconnu comme admin, set la variable admin côté serveur
 if(isset($_SESSION['access_granted']) && ($_SESSION['access_granted'] == true)) {
     $access_granted = true;
-    $page = "overview";
 }
 
-// 2e étape, si pas connecté et qu'envoie une requête pour se connecter, va checker sa requête
-if($access_granted === false && !empty($_POST) && isset($_POST['post_authenticate'])) {
-    $page = "check_authenticate"; // input caché post_authenticate
-}
-
-// 3e étape, s'il est connecté, check s'il a fait une requête
+// 2e étape, s'il est connecté, check s'il a fait une requête
 if($access_granted) {
     switch ($method) {
         case "POST":
@@ -79,19 +70,7 @@ if($access_granted) {
 
     // Roads
 switch($page){
-    case "authenticate_needed" : // cas par défaut => demande de mdp admin
-        $content = AUTHENTICATE;
-        break;
-    case "check_authenticate" : // mdp entré, check s'il est bon
-        if($_POST['password'] == PASSWORD) {
-            $_SESSION['access_granted'] = true;
-            $content = OVERVIEW;
-        } else {
-            $content = AUTHENTICATE;
-            $errorMessage = "wrong_password";
-        }
-        break;
-    case "overview" : // accès autorisé, HP du dashboard
+    case "overview" : // cas par défaut => HP du site
         $content = OVERVIEW;
         break;
     case "focusProject" : // affiche les données d'un projet en particulier

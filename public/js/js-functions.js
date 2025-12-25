@@ -1,11 +1,96 @@
 
+/* FONCTIONNEMENT DES POP UP */
+
+document.addEventListener('click', (e) => {
+    // écoute chaque clic sur le DOM
+    const trigger = e.target.closest('[data-popup-id]');
+    // quand clic, remonte les éléments du DOM au niveau du clic pour voir si
+    // lui ou un parent à l'attribut data-popup-id
+    if (!trigger) return;
+    // si non, ne va pas plus loin
+
+    const popupId = trigger.dataset.popupId;
+    const popup = document.getElementById(popupId);
+    // récup la data et trouve la popup avec
+
+    if (!popup) {
+        console.warn(`Popup introuvable : ${popupId}`);
+        return;
+        // si popup n'existe pas, avertissement console et stop
+    }
+
+    // si clic lié à popup et popup existe :
+        popup.showModal();
+        popup.style.top = `${(window.innerHeight - popup.offsetHeight) / 2}px`;
+        popup.style.left = `${(window.innerWidth - popup.offsetWidth) / 2}px`;
+        // ouvre la popup et la place
+
+        document.getElementById('close_popup')?.addEventListener('click', () => {
+            popup.close();
+        });
+        // active le bouton fermeture de la popup
+
+        popup.addEventListener('click', (e) => {
+            if (e.target === popup) {
+            // dialog = si clic en dehors de la popup, considéré comme clic sur la popup
+            // mais pas sur le content, donc target === popup => clic en dehors
+                popup.close();
+            }
+        });
+        // ferme la popup en cas de clic en dehors
+});
+
+
+/* CHECK ADMIN PASSWORD */
+
+const adminConnexionButton = document.getElementById('authenticate_button');
+const errorDiv = document.getElementById('errorDiv');
+
+if (adminConnexionButton) {
+    adminConnexionButton.addEventListener('click', (e) => {
+        e.preventDefault(); // bloque envoi form et refresh page
+
+        const passwordProposition = document.getElementById('password_proposition').value;
+
+        fetch('./src/ajax_request/authenticate_request.php', {
+            method: 'POST',
+            credentials: 'same-origin', // => le fichier fetch reçoit les données de session
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            body: new URLSearchParams({
+                password_proposition: passwordProposition
+                // ici, 1 seule data text simple à envoyer => type formData pas nécessaire, 
+                // le + simple est un encodage type URL (ex : password_proposition=test)
+            })
+        })
+        .then(response => response.json())
+        // récup le echo renvoyé par le PHP pour l'analyser
+        .then(data => {
+            // traite les data reçu dans le json
+            if (data.success) {
+                // si dans data, success == true
+                location.reload();
+            } else {
+                errorDiv.textContent = data.message;
+                errorDiv.classList.add('visible');
+            }
+        })
+        .catch(() => {
+            errorDiv.textContent = 'Erreur serveur';
+        });
+    });
+}
+
+
 /* FONCTION D'AFFICHAGE DYNAMIQUE DE LA CARD AVEC LES INFOS PROJET */
 
 const cardBloc = document.getElementById('card_focus');
 const cardImg = document.getElementById('card_img');
 const cardTitle = document.getElementById('card_title');
 const cardMainColor = document.getElementById('card_maincolor');
-const cardLink = document.getElementById('card_link');
+const cardProjectUrl = document.getElementById('card_project_url');
+const cardLink = document.getElementById('card_dashboard_link');
 const radios = document.querySelectorAll('input[name="radio_choice_logo"]');
 
 function updateCard(projectKey) {
@@ -21,8 +106,12 @@ function updateCard(projectKey) {
         cardBloc.style.border = "4px solid " + project.secondaryColor;
         cardImg.src = project.logo;
         cardTitle.textContent = project.name;
-        cardLink.href = '/dashboard/?project=' + projectKey; // en local = retirer "/dashboard" 
+        cardProjectUrl.href = project.publicUrl;
+        cardProjectUrl.style.backgroundColor = project.secondaryColor;
         cardLink.style.backgroundColor = project.secondaryColor;
+        if(cardLink.tagName === 'A'){
+            cardLink.href = '/dashboard/?project=' + projectKey; // en local = retirer "/dashboard" 
+        };
     }, 500); // plus de la moitié de la durée de l'anim pour que le changement se fasse quand c'est masqué
 
     // Étape 3 : réouvre la carte
