@@ -163,6 +163,7 @@ dialog::backdrop {
     border-radius: 12px;
     box-shadow: 0 2px 8px rgba(0,0,0,0.1);
 }
+
 .project-logo {
     width: 60px;
     height: 60px;
@@ -243,6 +244,7 @@ dialog::backdrop {
     fill: white;
     height: 20px;
     aspect-ratio: 1;
+    transform: translateZ(0); /* SVG n'est pas recréé à chaque changement de card => empêche latence */
 }
 
 #radio_panel {
