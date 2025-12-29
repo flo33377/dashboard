@@ -49,7 +49,9 @@ echo '<pre>'; */
 
 <?php if(!$access_granted) : ?>
 <dialog id="authenticate_content">
-    <button class="close_popup" id="close_popup">X</button>
+    <button class="close_popup" id="close_popup">
+        <div>X</div>
+    </button>
     <p>Pour accéder aux statistiques de chaque site, vous devez être authentifié.</p>
 
     <form action="" method="POST" id="authenticate_form">
